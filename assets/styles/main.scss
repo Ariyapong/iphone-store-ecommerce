@@ -1,3 +1,31 @@
-body{
-    background-color: #fff;
+@font-face {
+  font-family: "Sukhumvit-Bold";
+  src: url("~/assets/fonts/SukhumvitSet-Bold.woff2") format("woff2"),
+    url("~/assets/fonts/SukhumvitSet-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sukhumvit-Medium";
+  src: url("~/assets/fonts/SukhumvitSet-Medium.woff2") format("woff2"),
+    url("~/assets/fonts/SukhumvitSet-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: "Sukhumvit-Medium", sans-serif;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+.font-bold {
+  font-family: "Sukhumvit-Bold", sans-serif;
+}
+
+.font-medium {
+  font-family: "Sukhumvit-Medium", sans-serif;
 }
