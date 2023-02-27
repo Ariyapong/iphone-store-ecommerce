@@ -34,6 +34,7 @@ const appConfig: NuxtConfig = {
     "@nuxt/typescript-build",
     // https://go.nuxtjs.dev/tailwindcss
     "@nuxtjs/tailwindcss",
+    "@nuxtjs/svg",
   ],
   tailwindcss: {},
 
