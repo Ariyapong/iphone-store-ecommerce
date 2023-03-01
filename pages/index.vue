@@ -1,108 +1,136 @@
 <template>
   <div class="document">
-    <!-- <div class="text-blue-600 flex">Hello sawasdee krub <span class="font-bold"> value : ดาต้า {{ sampleVal }}</span></div> -->
-    <section class="nav"><nav-bar /></section>
-    <section class="main-content">
-      <div class="image-wrap">
-        <img :src="image" alt="mobile iphone" />
+    <section><nav-bar /></section>
+    <section class="main-content px-8 relative z-10">
+      <div class="product-image max-w-md mx-auto relative">
+        <XyzTransition xyz="fade ease-in-out-back">
+          <img
+            class="w-full absolute xyz-absolute"
+            :src="image"
+            alt="mobile iphone"
+            :key="image"
+          />
+        </XyzTransition>
+        <img :src="image" class="invisible locksize" alt=""/>
       </div>
-      <h2 class="title">ซื้อ iPhone 13</h2>
-      <h3 class="headline">รุ่น</h3>
-      <div v-for="productItem in products" :key="productItem.name" class="my-4">
-        <product-button
-          :class="{ selected: productItem.name === productName }"
-          @click="selectProduct(productItem)"
-          >{{ productItem.name }}</product-button
-        >
-      </div>
-      <h3 class="headline">สี</h3>
-      <div class="colors container">
+      <div class="product-detail">
+        <h2 class="title">ซื้อ iPhone 13</h2>
+        <h3 class="headline">รุ่น</h3>
         <div
-          v-for="(item, index) in model"
-          :key="`item.color-${index}`"
-          class="product-color"
+          v-for="productItem in products"
+          :key="productItem.name"
+          class="my-4"
         >
           <product-button
-            class="sqaure-pad"
-            :class="{ selected: item.color === color }"
-            @click="selectColor(item.color)"
+            :class="{ selected: productItem.name === productName }"
+            @click="selectModel(productItem)"
           >
-            <div class="button">
-              <div
-                class="sample-color"
-                :style="`background-color: #${item.color_hex}`"
-              ></div>
-              <div class="text">{{ item.color }}</div>
+            <div class="button-content">
+              <div>{{ productItem.name }}</div>
+              <div>{{ formatPrice(productItem.model[0].data[0].price) }}</div>
             </div>
           </product-button>
         </div>
+        <h3 class="headline">สี</h3>
+        <div class="colors container">
+          <div
+            v-for="(item, index) in model"
+            :key="`item.color-${index}`"
+            class="product-color"
+          >
+            <product-button
+              class="sqaure-pad"
+              :class="{ selected: item.color === color }"
+              @click="selectColor(item.color)"
+            >
+              <div class="button">
+                <div
+                  class="sample-color"
+                  :style="`background-color: #${item.color_hex}`"
+                ></div>
+                <div class="text">{{ item.color }}</div>
+              </div>
+            </product-button>
+          </div>
+        </div>
+        <h3 class="headline">ขนาด</h3>
+        <div class="storage container">
+          <div
+            v-for="(item, index) in storageData"
+            :key="`item.color-${index}`"
+            class="product-color"
+          >
+            <product-button
+              class="sqaure-pad"
+              :class="{ selected: item.size === storage }"
+              @click="selectStorage(item.size)"
+            >
+              <div class="button">
+                <div class="text">{{ item.size }}</div>
+                <div class="text">{{ formatPrice(item.price) }}</div>
+              </div>
+            </product-button>
+          </div>
+        </div>
+        <h3 class="pickup-method headline">คุณต้องการรับสินค้าด้วยวิธีใด</h3>
+        <div class="pickup pb-12 space-y-4">
+          <div class="store">
+            <product-button
+              class="sqaure-pad"
+              :class="{ selected: pickupMethod === 'store' }"
+              @click="selectPickupMethod('store')"
+            >
+              <div class="complex button flex gap-4">
+                <div class="image">
+                  <img
+                    class="w-10"
+                    src="~/assets/svg/pickup.svg"
+                    alt="pickup store"
+                  />
+                </div>
+                <div class="text grow">
+                  <div class="text-xl">บริการรับสินค้าหน้าร้าน</div>
+                  <div class="text-sm">จองเริ่มต้นเพียง 3,000 บาทเท่านั้น</div>
+                </div>
+              </div>
+            </product-button>
+          </div>
+          <div class="delivery-home">
+            <product-button
+              class="sqaure-pad"
+              :class="{ selected: pickupMethod === 'delivery' }"
+              @click="selectPickupMethod('delivery')"
+            >
+              <div class="complex button flex gap-4">
+                <div class="image">
+                  <img
+                    class="w-10"
+                    src="~/assets/svg/delivery.svg"
+                    alt="delivery"
+                  />
+                </div>
+                <div class="text grow">
+                  <div class="text-xl">บริการจัดส่งถึงหน้าบ้าน</div>
+                  <div class="text-sm">ชำระสินค้าในราคาเต็ม</div>
+                </div>
+              </div>
+            </product-button>
+          </div>
+        </div>
+        <hr class="separator" />
+        <submit-button class="py-9" @click="submitPreOrder">
+          ยืนยันการสั่งซื้อล่วงหน้า
+        </submit-button>
       </div>
-      <h3 class="headline">ขนาด</h3>
-      <div class="storage container">
-        <div
-          v-for="(item, index) in storageData"
-          :key="`item.color-${index}`"
-          class="product-color"
-        >
-          <product-button
-            class="sqaure-pad"
-            :class="{ selected: item.size === storage }"
-            @click="selectStorage(item.size)"
-          >
-            <div class="button">
-              <div class="text">{{ item.size }}</div>
-              <div class="text">{{ item.price }}</div>
-            </div>
-          </product-button>
+    </section>
+    <section>
+      <popup :display="displayPopup" @toggle-popup="togglePopup">
+        <div class="pb-8 text-center">
+          <h3 class="text-2xl py-8 font-semibold">การสั่งซื้อล่วงหน้าสำเร็จ</h3>
+          <div>การชำระเงินของคุณสำเร็จแล้ว!</div>
+          <div>ตอนนี้เราจะส่งอีเมลยืนยันคำสั่งซื้อสำเร็จให้คุณ</div>
         </div>
-      </div>
-      <h3 class="pickup-method headline">คุณต้องการรับสินค้าด้วยวิธีใด</h3>
-      <div class="pickup pb-12 space-y-4">
-        <div class="store">
-          <product-button
-            class="sqaure-pad"
-            :class="{ selected: pickupMethod === 'store' }"
-            @click="selectPickupMethod('store')"
-          >
-            <div class="complex button flex gap-4">
-              <div class="image">
-                <img
-                  class="w-10"
-                  src="~/assets/svg/pickup.svg"
-                  alt="pickup store"
-                />
-              </div>
-              <div class="text grow">
-                <div class="text-xl">บริการรับสินค้าหน้าร้าน</div>
-                <div class="text-sm">จองเริ่มต้นเพียง 3,000 บาทเท่านั้น</div>
-              </div>
-            </div>
-          </product-button>
-        </div>
-        <div class="delivery-home">
-          <product-button
-            class="sqaure-pad"
-            :class="{ selected: pickupMethod === 'delivery' }"
-            @click="selectPickupMethod('delivery')"
-          >
-            <div class="complex button flex gap-4">
-              <div class="image">
-                <img
-                  class="w-10"
-                  src="~/assets/svg/delivery.svg"
-                  alt="delivery"
-                />
-              </div>
-              <div class="text grow">
-                <div class="text-xl">บริการจัดส่งถึงหน้าบ้าน</div>
-                <div class="text-sm">ชำระสินค้าในราคาเต็ม</div>
-              </div>
-            </div>
-          </product-button>
-        </div>
-      </div>
-      <hr class="separator" />
-      <submit-button> ยืนยันการสั่งซื้อล่วงหน้า </submit-button>
+      </popup>
     </section>
   </div>
 </template>
@@ -115,8 +143,6 @@ import { Data, Model, MainProduct, Detail } from "@/types/product";
 export default Vue.extend({
   name: "IndexPage",
   data: () => ({
-    colorList: [],
-    sizeList: [],
     productSelect: 0,
     image: "",
     productName: "",
@@ -126,6 +152,7 @@ export default Vue.extend({
     pickupMethod: "",
     model: [] as Model[],
     storageData: [] as Detail[],
+    displayPopup: false,
   }),
   async asyncData({ $axios }) {
     const PRODUCT_ENDPOINT = "https://interview.com7.in/api/pre-order";
@@ -167,7 +194,6 @@ export default Vue.extend({
     }
 
     return {
-      sampleVal: "eiei",
       products,
       image,
       productName,
@@ -185,31 +211,24 @@ export default Vue.extend({
     console.log("check storage er141242 : ", this.storage);
     console.log("check model er141242 : ", this.model);
     console.log("check model er141242 : ", this.model); */
-    console.log("check model er141242 : ", this.model);
-    console.log("check product er141242 : ", this.products);
+    // console.log("check product er141242 : ", this.products);
   },
   methods: {
-    selectProduct(items: any): void {
-      // console.log("items : ", items);
+    selectModel(items: any): void {
       this.productName = items.name;
       this.mapProduct(items.name, "product");
     },
     selectColor(color: string): void {
       this.color = color;
       this.mapProduct(color, "color");
-      // console.log("color LL : ", color);
     },
     selectStorage(storage: string): void {
       this.storage = storage;
-      // console.log("storage LL : ", storage);
     },
     selectPickupMethod(method: string): void {
       this.pickupMethod = method;
     },
     mapProduct(productName: string, level: string): void {
-      // this.clearData();
-      // console.log("map product : ", productName);
-
       if (level === "product") {
         this.color = "";
         this.storage = "";
@@ -221,64 +240,65 @@ export default Vue.extend({
         if (newModelData && Object.keys(newModelData).length > 0) {
           console.log("check model er141242 : ", newModelData);
           this.model = newModelData.model;
-
           // set new defaults
           // default colors
           this.color = newModelData.model[0].color;
-
           // storage
-          const storageSet = newModelData.model.find((item) => {
+          const storageSet = newModelData.model.find((item: Model) => {
             console.log("item... ", item);
             return item.color === newModelData.model[0].color;
           });
+          this.storageData = storageSet.data;
+          // set new defaults
+          // default storage
+          this.storage = storageSet.data[0].size;
+          // default images
+          this.image = newModelData.model[0].data[0].image_url;
+        }
+      }
+      if (level === "color") {
+        this.storage = "";
+
+        // storage
+        const datatemp: Model[] = [...this.model];
+        const storageSet: Model | undefined = datatemp.find(
+          (item) => item.color === productName
+        );
+
+        // console.log("ceug : ", storageSet);
+        if (storageSet !== undefined) {
           this.storageData = storageSet.data;
 
           // set new defaults
           // default storage
           this.storage = storageSet.data[0].size;
+          // default images
+          this.image = storageSet.data[0].image_url;
         }
-      }
-      if (level === "color") {
-        console.log("debug trigger color")
-        this.storage = "";
-        // console.log("check model er141242 : ", newModelData);
-        // this.model = newModelData.model;
-
-        // set new defaults
-        // default colors
-        // this.color = this.model[0].color;
-
-        console.log("debug : ", this.model);
-
-        // storage
-        const datatemp = [...this.model];
-        const storageSet: any = datatemp.find((item) => {
-          /* console.log("item... ", item);
-          console.log("this.model[0].color... ", productName); */
-          return item.color === productName;
-        });
-
-        console.log("ceug : ", storageSet);
-         this.storageData = storageSet.data;
-
-        // set new defaults
-        // default storage
-        this.storage = storageSet.data[0].size;
       }
     },
     clearData() {
       this.color = "";
       this.storage = "";
     },
+    submitPreOrder() {
+      this.displayPopup = true;
+    },
+    togglePopup(flag) {
+      this.displayPopup = flag;
+    },
+    formatPrice(value) {
+      return new Intl.NumberFormat("th-TH", {
+        style: "currency",
+        currency: "THB",
+      }).format(value);
+    },
   },
-  computed: {},
 });
 </script>
 
 <style lang="scss" scoped>
 .main-content {
-  padding: 3.75rem 2rem 1rem;
-
   h2.title {
     font-size: 2.5rem;
     line-height: 1.3;
@@ -288,12 +308,10 @@ export default Vue.extend({
     line-height: 1.33;
     padding: 2rem 0;
   }
-
   .container::v-deep {
     display: grid;
     gap: 10px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-
     .text {
       text-align: center;
     }
@@ -301,7 +319,6 @@ export default Vue.extend({
       display: flex;
       flex-direction: column;
       gap: 10px;
-
       .sample-color {
         margin: 0 auto;
         border-radius: 50%;
@@ -310,12 +327,28 @@ export default Vue.extend({
       }
     }
   }
-
   .sqaure-pad {
     padding: 1rem 1.75rem;
   }
   .separator {
     border: 0.03125rem solid #dddddd;
+  }
+  @media screen and (min-width: 768px) {
+    display: flex;
+    align-items: flex-start;
+    gap: 0 2rem;
+    max-width: 1024px;
+    margin: 0 auto;
+    .product-image {
+      position: sticky;
+      flex: 1 1;
+      top: 1rem;
+      height: 100%;
+    }
+    .product-detail {
+      padding-top: 7rem;
+      flex: 1 1;
+    }
   }
 }
 </style>

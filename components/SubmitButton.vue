@@ -1,5 +1,5 @@
 <template>
-  <div class="button-wrapper">
+  <div class="button-wrapper" @click="$emit('click')">
     <button class="button" type="button">
       <slot />
       <span class="effect"></span>
@@ -11,7 +11,7 @@ export default {};
 </script>
 <style lang="scss" scoped>
 .button-wrapper {
-  padding: 2.25rem 0;
+  /* padding: 2.25rem 0; */
   .button {
     line-height: 1.3;
     display: block;

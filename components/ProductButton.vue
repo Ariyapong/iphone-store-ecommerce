@@ -24,5 +24,10 @@ export default Vue.extend({
   &.selected {
     border: 0.0625rem solid #5bba47;
   }
+
+  .button-content {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 </style>
