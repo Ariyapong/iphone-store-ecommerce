@@ -126,9 +126,9 @@
     <section>
       <popup :display="displayPopup" @toggle-popup="togglePopup">
         <div class="pb-8 text-center">
-          <h3 class="text-2xl py-8 font-semibold">การสั่งซื้อล่วงหน้าสำเร็จ</h3>
-          <div>การชำระเงินของคุณสำเร็จแล้ว!</div>
-          <div>ตอนนี้เราจะส่งอีเมลยืนยันคำสั่งซื้อสำเร็จให้คุณ</div>
+          <h3 class="text-2xl py-8 font-semibold">{{ popupMsg.title }}</h3>
+          <div>{{ popupMsg.subTitle }}</div>
+          <div>{{ popupMsg.detail }}</div>
         </div>
       </popup>
     </section>
@@ -139,6 +139,13 @@
 import Vue from "vue";
 import orderBy from "lodash.orderby";
 import { Model, MainProduct, Detail } from "@/types/product";
+
+interface msg {
+  isError: boolean;
+  title: string;
+  subTitle: string;
+  detail: string;
+}
 
 export default Vue.extend({
   name: "IndexPage",
@@ -153,6 +160,7 @@ export default Vue.extend({
     model: [] as Model[],
     storageData: [] as Detail[],
     displayPopup: false,
+    popupMsg: {} as msg,
   }),
   async asyncData({ $axios }) {
     const PRODUCT_ENDPOINT = "https://interview.com7.in/api/pre-order";
@@ -278,9 +286,7 @@ export default Vue.extend({
         }
       }
     },
-    submitPreOrder(): void {
-      this.displayPopup = true;
-    },
+
     togglePopup(flag: boolean): void {
       this.displayPopup = flag;
     },
@@ -289,6 +295,47 @@ export default Vue.extend({
         style: "currency",
         currency: "THB",
       }).format(value);
+    },
+    async submitPreOrder(): Promise<void> {
+      // extract info
+      const modelName = this.productName;
+      const modelStorage = this.storage;
+      const modelColor = this.color;
+      const pickupMethod = this.pickupMethod;
+
+      // find target
+      // const targetModel = this.products.find(model => model.name === modelName)
+      const targetModel: MainProduct | undefined = this.products.find(
+        (model) => model.name === modelName
+      );
+      const targetColor: Model | undefined = targetModel?.model.find(
+        ({ color }) => color === modelColor
+      );
+      const targetProduct: Detail | undefined = targetColor?.data.find(
+        ({ size }) => size === modelStorage
+      );
+      const productId: number | null = targetProduct?.id || null;
+
+      const responseData = await this.$axios.post(
+        "https://interview.com7.in/api/pre-order",
+        { id: productId }
+      );
+
+      if (responseData.data && responseData.data.success) {
+        console.log("no error ...");
+        this.popupMsg.isError = false;
+        this.popupMsg.title = "การสั่งซื้อล่วงหน้าสำเร็จ";
+        this.popupMsg.subTitle = "การชำระเงินของคุณสำเร็จแล้ว!";
+        this.popupMsg.detail =
+          "ตอนนี้เราจะส่งอีเมลยืนยันคำสั่งซื้อสำเร็จให้คุณ";
+      } else {
+        this.popupMsg.isError = true;
+        this.popupMsg.title = `Something went wrong... `;
+        this.popupMsg.subTitle = `Error ${responseData.data.status}`;
+        this.popupMsg.detail = responseData.data.message;
+      }
+
+      this.displayPopup = true;
     },
   },
 });

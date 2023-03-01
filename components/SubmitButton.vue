@@ -1,13 +1,20 @@
 <template>
   <div class="button-wrapper" @click="$emit('click')">
-    <button class="button" type="button">
+    <button class="button" :type="type">
       <slot />
       <span class="effect"></span>
     </button>
   </div>
 </template>
 <script lang="ts">
-export default {};
+export default {
+  props: {
+    type: {
+      type: String,
+      default: "button",
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .button-wrapper {
