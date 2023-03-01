@@ -11,7 +11,7 @@
             :key="image"
           />
         </XyzTransition>
-        <img :src="image" class="invisible locksize" alt=""/>
+        <img :src="image" class="invisible locksize" alt="" />
       </div>
       <div class="product-detail">
         <h2 class="title">ซื้อ iPhone 13</h2>
@@ -138,7 +138,7 @@
 <script lang="ts">
 import Vue from "vue";
 import orderBy from "lodash.orderby";
-import { Data, Model, MainProduct, Detail } from "@/types/product";
+import { Model, MainProduct, Detail } from "@/types/product";
 
 export default Vue.extend({
   name: "IndexPage",
@@ -148,7 +148,7 @@ export default Vue.extend({
     productName: "",
     color: "",
     storage: "",
-    products: [] as Data[],
+    products: [] as MainProduct[],
     pickupMethod: "",
     model: [] as Model[],
     storageData: [] as Detail[],
@@ -157,19 +157,19 @@ export default Vue.extend({
   async asyncData({ $axios }) {
     const PRODUCT_ENDPOINT = "https://interview.com7.in/api/pre-order";
     const result = await $axios.get(PRODUCT_ENDPOINT);
-    let products: any = [];
+    let products: MainProduct[] = [];
     let image = "";
     let productName = "";
     let color = "";
     let storage = "";
-    let model = [];
-    let storageData = [];
+    let model: Model[] = [];
+    let storageData: Detail[] = [];
     let pickupMethod = "";
 
     if (result.status === 200 && result.data.success) {
       const productData = result.data.data.main_product;
       if (productData && productData.length > 0) {
-        // sort products depend on prices
+        // sort products base on prices
         products = orderBy(
           productData,
           ["model[0].data[0].price"],
@@ -214,7 +214,7 @@ export default Vue.extend({
     // console.log("check product er141242 : ", this.products);
   },
   methods: {
-    selectModel(items: any): void {
+    selectModel(items: MainProduct): void {
       this.productName = items.name;
       this.mapProduct(items.name, "product");
     },
@@ -230,11 +230,10 @@ export default Vue.extend({
     },
     mapProduct(productName: string, level: string): void {
       if (level === "product") {
-        this.color = "";
-        this.storage = "";
+        // this.color = "";
+        // this.storage = "";
         // find associate data from selected productName
-        // color
-        const newModelData: any = this.products.find(
+        const newModelData: MainProduct | undefined = this.products.find(
           (item: any) => item.name === productName
         );
         if (newModelData && Object.keys(newModelData).length > 0) {
@@ -243,21 +242,24 @@ export default Vue.extend({
           // set new defaults
           // default colors
           this.color = newModelData.model[0].color;
+          // default images
+          this.image = newModelData.model[0].data[0].image_url;
           // storage
           const storageSet = newModelData.model.find((item: Model) => {
             console.log("item... ", item);
             return item.color === newModelData.model[0].color;
           });
-          this.storageData = storageSet.data;
-          // set new defaults
-          // default storage
-          this.storage = storageSet.data[0].size;
-          // default images
-          this.image = newModelData.model[0].data[0].image_url;
+
+          if (storageSet !== undefined) {
+            this.storageData = storageSet.data;
+            // set new defaults
+            // default storage
+            this.storage = storageSet.data[0].size;
+          }
         }
       }
       if (level === "color") {
-        this.storage = "";
+        // this.storage = "";
 
         // storage
         const datatemp: Model[] = [...this.model];
@@ -265,7 +267,6 @@ export default Vue.extend({
           (item) => item.color === productName
         );
 
-        // console.log("ceug : ", storageSet);
         if (storageSet !== undefined) {
           this.storageData = storageSet.data;
 
@@ -277,17 +278,13 @@ export default Vue.extend({
         }
       }
     },
-    clearData() {
-      this.color = "";
-      this.storage = "";
-    },
-    submitPreOrder() {
+    submitPreOrder(): void {
       this.displayPopup = true;
     },
-    togglePopup(flag) {
+    togglePopup(flag: boolean): void {
       this.displayPopup = flag;
     },
-    formatPrice(value) {
+    formatPrice(value: number): string {
       return new Intl.NumberFormat("th-TH", {
         style: "currency",
         currency: "THB",
