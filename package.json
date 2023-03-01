@@ -12,7 +12,7 @@
   "dependencies": {
     "@animxyz/vue": "^0.6.7",
     "@nuxtjs/axios": "^5.13.6",
-    "core-js": "^3.25.3",
+    "core-js": "^3.29.0",
     "lodash.orderby": "^4.6.0",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
