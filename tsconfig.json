@@ -28,6 +28,7 @@
     "types": [
       "@nuxt/types",
       "@types/node",
+      "@nuxt/typescript-build",
       "@nuxtjs/axios",
       "@types/lodash.orderby"
     ]
