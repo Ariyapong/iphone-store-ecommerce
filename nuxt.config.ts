@@ -17,7 +17,9 @@ const appConfig: NuxtConfig = {
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
-  ssr: true,
+  // ssr: true,
+  ssr: false,
+  target: 'static',
   // Global CSS: https://go.nuxtjs.dev/config-css
   // css: ["~/assets/styles/main.scss"],
   css: ["./assets/styles/main.scss"],

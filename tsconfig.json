@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "ESNext",
+    "skipLibCheck": true,
     "moduleResolution": "Node",
     "lib": [
       "ESNext",
@@ -27,6 +28,7 @@
     "types": [
       "@nuxt/types",
       "@types/node",
+      "@nuxt/typescript-build",
       "@nuxtjs/axios",
       "@types/lodash.orderby"
     ]
