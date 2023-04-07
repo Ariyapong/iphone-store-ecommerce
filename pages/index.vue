@@ -212,15 +212,6 @@ export default Vue.extend({
       pickupMethod,
     };
   },
-  mounted() {
-    /* console.log("check product er141242 : ", this.products);
-    console.log("check productName er141242 : ", this.productName);
-    console.log("check color er141242 : ", this.color);
-    console.log("check storage er141242 : ", this.storage);
-    console.log("check model er141242 : ", this.model);
-    console.log("check model er141242 : ", this.model); */
-    // console.log("check product er141242 : ", this.products);
-  },
   methods: {
     selectModel(items: MainProduct): void {
       this.productName = items.name;
