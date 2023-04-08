@@ -19,7 +19,7 @@ const appConfig: NuxtConfig = {
   },
   // ssr: true,
   ssr: false,
-  target: 'static',
+  target: "static",
   // Global CSS: https://go.nuxtjs.dev/config-css
   // css: ["~/assets/styles/main.scss"],
   css: ["./assets/styles/main.scss"],
@@ -42,6 +42,8 @@ const appConfig: NuxtConfig = {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxtjs/axios"],
+
+  serverMiddleware: [{ path: "/api", handler: "@/api" }],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

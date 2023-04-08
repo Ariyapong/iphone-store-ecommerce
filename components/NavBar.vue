@@ -1,7 +1,7 @@
 <template>
   <nav class="nav-bar">
     <div class="content">
-      <div class="highlight text-2xl">interview</div>
+      <div class="highlight text-2xl">Pre Order</div>
       <div class="sub-highlight text-xl">สั่งซื้อล่วงหน้า iPhone 13</div>
     </div>
   </nav>
