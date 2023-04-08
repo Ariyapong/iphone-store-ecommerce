@@ -18,7 +18,7 @@
     "core-js": "^3.25.3",
     "express": "^4.18.2",
     "lodash.orderby": "^4.6.0",
-    "nuxt": "^2.15.8",
+    "nuxt": "^3.3.3",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10"
